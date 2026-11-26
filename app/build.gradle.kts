@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.mireyaenmalta"
+    namespace = "com.example.maltaexplorer"
     compileSdk = 34
 
     buildFeatures {
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.mireyaenmalta"
+        applicationId = "com.example.maltaexplorer"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

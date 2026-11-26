@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.maltaexplorer.model.*
-import com.example.maltaexplorer.ui.screens.PantallaDetalleLugar
+import com.example.maltaexplorer.ui.pages.PantallaDetalleLugar
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

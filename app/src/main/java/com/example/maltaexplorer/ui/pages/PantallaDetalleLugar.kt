@@ -1,4 +1,4 @@
-package com.example.maltaexplorer.ui.screens
+package com.example.maltaexplorer.ui.pages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +28,8 @@ import com.example.maltaexplorer.model.*
 import com.example.maltaexplorer.ui.components.TarjetaServicio
 
 /**
- * Pantalla completa de Detalle según el árbol de la Imagen de Detalle[cite: 4, 5].
- * IMPLEMENTACIÓN ESTRICTA: Sin Scaffold, sin Drawer ni NavHost (con scroll vertical en la raíz)[cite: 4, 5].
+ * Pantalla completa de Detalle según el árbol de la Imagen 2.
+ * IMPLEMENTACIÓN ESTRICTA: Sin Scaffold, sin Drawer ni NavHost.
  */
 @Composable
 fun PantallaDetalleLugar(
@@ -42,14 +42,14 @@ fun PantallaDetalleLugar(
 ) {
     val scrollState = rememberScrollState()
 
-    // Column raíz: Contenedor principal con scroll vertical[cite: 4, 5]
+    // Raíz: Column con scroll vertical
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
     ) {
-        // A · CabeceraDetalle[cite: 4, 5]
+        // A · CabeceraDetalle
         CabeceraDetalle(
             onVolver = onVolverClick,
             onCompartir = onCompartirClick,
@@ -57,7 +57,7 @@ fun PantallaDetalleLugar(
             esFavorito = lugar.esFavorito
         )
 
-        // B · GaleriaLugar (Componente 02)[cite: 4, 5]
+        // B · GaleriaLugar (Componente reutilizable 02)
         GaleriaLugar(
             imagenPrincipal = lugar.imagenUrl,
             imagenesGaleria = lugar.fotosGaleria,
@@ -66,7 +66,7 @@ fun PantallaDetalleLugar(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // C · IdentidadLugar[cite: 4, 5]
+        // C · IdentidadLugar
         IdentidadLugar(
             lugar = lugar,
             onVerEnMapaClick = onVerEnMapaClick,
@@ -75,7 +75,7 @@ fun PantallaDetalleLugar(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // D · ResumenValoracion (Componente 03)[cite: 4, 5]
+        // D · ResumenValoracion (Componente reutilizable 03)
         ResumenValoracion(
             valoracion = lugar.valoracion,
             numResenas = lugar.numResenas,
@@ -84,7 +84,7 @@ fun PantallaDetalleLugar(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // E · CondicionesHoy (Componente 04)[cite: 4, 5]
+        // E · CondicionesHoy (Componente reutilizable 04)
         CondicionesHoy(
             condiciones = lugar.condicionesHoy,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -92,7 +92,7 @@ fun PantallaDetalleLugar(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // F · DescripcionLugar[cite: 4, 5]
+        // F · DescripcionLugar
         DescripcionLugar(
             descripcion = lugar.descripcionCompleta,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -100,7 +100,7 @@ fun PantallaDetalleLugar(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // G · ServiciosLugar (Usa TarjetaServicio - Componente 05)[cite: 4, 5]
+        // G · ServiciosLugar (usa TarjetaServicio - Componente 05)
         ServiciosLugar(
             servicios = lugar.servicios,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -111,9 +111,13 @@ fun PantallaDetalleLugar(
 }
 
 // ---------------------------------------------------------------------------
-// SUBCOMPONENTES DE LA PANTALLA DE DETALLE (Mapeados 1:1 al árbol)[cite: 4, 5]
+// SUBCOMPONENTES DE LA PANTALLA DE DETALLE (Mapeados 1:1 al árbol)
 // ---------------------------------------------------------------------------
 
+/**
+ * A · CabeceraDetalle
+ * Row: Botón volver + Texto + Row de acciones (Favorito + Compartir)
+ */
 @Composable
 fun CabeceraDetalle(
     onVolver: () -> Unit,
@@ -154,6 +158,10 @@ fun CabeceraDetalle(
     }
 }
 
+/**
+ * B · GaleriaLugar (Componente 02)
+ * Imagen principal + badge + botón contador de fotos + LazyRow de miniaturas con +N
+ */
 @Composable
 fun GaleriaLugar(
     imagenPrincipal: String,
@@ -162,6 +170,7 @@ fun GaleriaLugar(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
+        // Box: Fotografía con elementos superpuestos
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,6 +185,7 @@ fun GaleriaLugar(
                 modifier = Modifier.fillMaxSize()
             )
 
+            // Row: Etiqueta de protección / Categoría
             Surface(
                 color = Color.Black.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(6.dp),
@@ -192,6 +202,7 @@ fun GaleriaLugar(
                 )
             }
 
+            // Button: Abrir galería / fotos totales
             Surface(
                 color = Color.Black.copy(alpha = 0.6f),
                 shape = RoundedCornerShape(6.dp),
@@ -221,6 +232,7 @@ fun GaleriaLugar(
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // LazyRow: Miniaturas visibles
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -237,6 +249,7 @@ fun GaleriaLugar(
                 )
             }
 
+            // Última miniatura con contador superpuesto (+8)
             item {
                 Box(
                     modifier = Modifier
@@ -272,6 +285,10 @@ fun GaleriaLugar(
     }
 }
 
+/**
+ * C · IdentidadLugar
+ * Row categoría/distintivo + Título grande + Ubicación y botón "Ver en mapa"
+ */
 @Composable
 fun IdentidadLugar(
     lugar: Lugar,
@@ -358,6 +375,10 @@ fun IdentidadLugar(
     }
 }
 
+/**
+ * D · ResumenValoracion (Componente 03)
+ * Card: Bloque de puntuación + Síntesis + Botón Opiniones
+ */
 @Composable
 fun ResumenValoracion(
     valoracion: Double,
@@ -377,6 +398,7 @@ fun ResumenValoracion(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
+                // Badge con puntuación destacada
                 Surface(
                     shape = RoundedCornerShape(8.dp),
                     color = MaterialTheme.colorScheme.primary,
@@ -418,7 +440,7 @@ fun ResumenValoracion(
             }
 
             OutlinedButton(
-                onClick = { /* Abrir opiniones */ },
+                onClick = { /* Abrir diálogo o vista opiniones */ },
                 shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
             ) {
@@ -428,6 +450,10 @@ fun ResumenValoracion(
     }
 }
 
+/**
+ * E · CondicionesHoy (Componente 04)
+ * Card: Icono circular sol + Resumen condiciones + Indicadores clima
+ */
 @Composable
 fun CondicionesHoy(
     condiciones: CondicionesClima,
@@ -444,6 +470,7 @@ fun CondicionesHoy(
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Fondo circular + Icon sun
             Box(
                 modifier = Modifier
                     .size(42.dp)
@@ -461,6 +488,7 @@ fun CondicionesHoy(
 
             Spacer(modifier = Modifier.width(12.dp))
 
+            // Resumen de estado
             Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -489,6 +517,7 @@ fun CondicionesHoy(
                 )
             }
 
+            // Indicadores térmicos / UV
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = condiciones.temperatura,
@@ -505,6 +534,10 @@ fun CondicionesHoy(
     }
 }
 
+/**
+ * F · DescripcionLugar
+ * Texto descriptivo con botón "Leer más + chevron" para expandir
+ */
 @Composable
 fun DescripcionLugar(
     descripcion: String,
@@ -544,6 +577,10 @@ fun DescripcionLugar(
     }
 }
 
+/**
+ * G · ServiciosLugar
+ * Cabecera con recuento y lista horizontal de tarjetas de servicio
+ */
 @Composable
 fun ServiciosLugar(
     servicios: List<Servicio>,
@@ -569,6 +606,7 @@ fun ServiciosLugar(
 
         Spacer(modifier = Modifier.height(10.dp))
 
+        // LazyRow para disposición horizontal de servicios
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -578,3 +616,4 @@ fun ServiciosLugar(
         }
     }
 }
+

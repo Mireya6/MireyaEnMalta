@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">MireyaEnMalta</string>
+
+    <!-- PantallaDetalleLugar -->
+    <string name="detalle_titulo">Detalle del lugar</string>
+    <string name="detalle_contador_fotos">12 fotos</string>
+    <string name="detalle_mas_fotos">+8</string>
+    <string name="detalle_destino_imprescindible">Destino imprescindible</string>
+    <string name="detalle_ver_en_mapa">Ver en mapa</string>
+    <string name="detalle_valoracion_excelente">Excelente</string>
+    <string name="detalle_basado_en_resenas">Basado en %1$s reseñas</string>
+    <string name="detalle_opiniones">Opiniones</string>
+    <string name="detalle_condiciones_hoy">Condiciones hoy</string>
+    <string name="detalle_leer_menos">Leer menos</string>
+    <string name="detalle_leer_mas">Leer más</string>
+    <string name="detalle_servicios_titulo">Servicios e información relevante</string>
+    <string name="detalle_servicios_puntos">%1$d PUNTOS</string>
+
+    <!-- Tarjetas -->
+    <string name="accion_ver_mas">Ver más</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_volver">Volver</string>
+    <string name="cd_favorito">Favorito</string>
+    <string name="cd_compartir">Compartir</string>
+    <string name="cd_vista_aerea">Vista aérea</string>
+    <string name="cd_miniatura">Miniatura</string>
+    <string name="cd_sol">Sol</string>
+    <string name="cd_ubicacion">Ubicación</string>
+    <string name="cd_pin_ubicacion">Pin de ubicación</string>
+    <string name="cd_valoracion">Valoración</string>
+    <string name="cd_estrella">Estrella</string>
+    <string name="cd_flecha_derecha">Flecha derecha</string>
 </resources>

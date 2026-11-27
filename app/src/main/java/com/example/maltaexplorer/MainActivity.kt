@@ -16,6 +16,7 @@ import com.example.maltaexplorer.model.Lugar
 import com.example.maltaexplorer.model.Servicio
 import com.example.maltaexplorer.model.TipoServicioIcono
 import com.example.maltaexplorer.ui.pages.PantallaDetalleLugar
+import com.example.maltaexplorer.ui.theme.MaltaExplorerTheme
 
 // Declara la actividad principal de la aplicación basada en ComponentActivity
 class MainActivity : ComponentActivity() {
@@ -86,8 +87,8 @@ class MainActivity : ComponentActivity() {
             // Mantiene el estado reactivo del lugar de ejemplo durante la sesión en pantalla
             var lugarEstado by remember { mutableStateOf(lugarInicial) }
 
-            // Aplica el tema MaterialTheme de la aplicación (cámbialo a MaltaExplorerTheme cuando crees ui/theme/Theme.kt)
-            MaterialTheme {
+            // Aplica el tema MaterialTheme de la aplicación
+            MaltaExplorerTheme{
                 // Superficie base que ocupa toda la pantalla con el color de fondo del tema
                 Surface(
                     // Ocupa el ancho y alto completos de la pantalla

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.maltaexplorer.R
 import com.example.maltaexplorer.model.Lugar
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.maltaexplorer.model.CondicionesClima
 
 
 // Data class que agrupa los datos y callbacks de ContenidoTarjeta (C1)
@@ -267,5 +269,79 @@ fun TarjetaListado(
                 )
             )
         }
+
+    }
+}
+
+// Crea un ejemplo de La Valeta del mockup para previsualizar TarjetaListado
+private fun laValetaTarjetaPreviewSample(): Lugar = Lugar(
+    // Identificador del lugar
+    id = "la-valeta",
+    // Nombre principal del lugar según el mockup
+    titulo = "La Valeta (Valletta)",
+    // Categoría turística del mockup
+    categoria = "Historia",
+    // Ubicación dentro del archipiélago según el mockup
+    ubicacion = "Isla de Malta",
+    // Valoración media de ejemplo según el mockup
+    valoracion = 4.9,
+    // Cantidad de reseñas en formato texto según el mockup
+    numResenas = "1.8k",
+    // Descripción corta para la tarjeta del listado
+    descripcionCorta = "La majestuosa capital amurallada barroca de los caballeros con vistas al puerto.",
+    // Descripción detallada para la pantalla de detalle
+    descripcionCompleta = "Capital histórica y barroca de Malta, declarada Patrimonio de la Humanidad, con calles escalonadas, baluartes y miradores.",
+    // URL principal de ejemplo
+    imagenUrl = "https://example.com/la-valeta.jpg",
+    // Lista de imágenes para galería
+    fotosGaleria = listOf(
+        "https://example.com/la-valeta-1.jpg",
+        "https://example.com/la-valeta-2.jpg"
+    ),
+    // Estado inicial de favorito en la vista previa según el mockup
+    esFavorito = false,
+    // Condiciones climáticas de ejemplo
+    condicionesHoy = CondicionesClima(
+        estado = "Soleado",
+        agua = "Mar calmado",
+        oleaje = "Brisa suave",
+        temperatura = "25 °C",
+        uv = "UV alto"
+    ),
+    // Lista vacía de servicios para la vista previa de la tarjeta
+    servicios = emptyList()
+)
+
+// Preview del componente ContenidoTarjeta con datos de La Valeta
+@Preview(showBackground = true)
+@Composable
+private fun ContenidoTarjetaPreview() {
+    // Aplica el tema para la previsualización
+    MaterialTheme {
+        // Renderiza ContenidoTarjeta usando el ejemplo de La Valeta
+        val lugar = laValetaTarjetaPreviewSample()
+        ContenidoTarjeta(
+            data = ContenidoTarjetaData(
+                ubicacion = lugar.ubicacion,
+                valoracion = lugar.valoracion.toString(),
+                titulo = lugar.titulo,
+                descripcion = lugar.descripcionCorta
+            )
+        )
+    }
+}
+
+// Preview del componente TarjetaListado con datos de La Valeta
+@Preview(showBackground = true)
+@Composable
+private fun TarjetaListadoPreview() {
+    // Aplica el tema para la previsualización
+    MaterialTheme {
+        // Renderiza TarjetaListado usando el ejemplo de La Valeta
+        TarjetaListado(
+            data = TarjetaListadoData(
+                lugar = laValetaTarjetaPreviewSample()
+            )
+        )
     }
 }

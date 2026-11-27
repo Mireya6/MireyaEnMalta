@@ -47,8 +47,8 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.room.ktx)
-    //implementation(libs.androidx.material3.android)
+    // implementation(libs.androidx.room.ktx)
+    // implementation(libs.androidx.material3.android)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -61,12 +61,17 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
-    //Para los iconos avanzados que usamos (Boat, Pool, Bus, etc.)
+    // Para los iconos avanzados que usamos (Boat, Pool, Bus, etc.)
     implementation("androidx.compose.material:material-icons-extended")
 
-    //Para cargar imágenes por URL con AsyncImage (Coil)
+    // Para cargar imágenes por URL con AsyncImage (Coil)
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
 
+configurations.all {
+    resolutionStrategy {
+        force("androidx.core:core:1.13.0", "androidx.core:core-ktx:1.13.0")
+    }
 }

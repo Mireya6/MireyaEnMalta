@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
             // Descripción corta para resúmenes y listados
             descripcionCorta = "Aguas cristalinas turquesas entre Comino y Gozo.",
             // Descripción completa para la pantalla de detalle
-            descripcionCompleta = "La Laguna Azul es el rincón más icónico y deslumbrante del archipiélago maltés. Encajada entre la deshabitada Isla de Comino y el islote de Cominotto, forma una espectacular piscina natural de aguas turquesas brillantes y fondo de arena blanca calcárea.",
+            descripcionCompleta = "La Laguna Azul es el rincón más icónico y deslumbrante del archipiélago maltés. Encajada entre la deshabitada Isla de Gozo y el islote de Comino, forma una espectacular piscina natural de aguas turquesas brillantes y fondo de arena blanca calcárea.",
             // URL de la fotografía principal del lugar
             imagenUrl = "https://images.unsplash.com/photo-1544551763-46a013bb70d5",
             // Lista de fotografías para la galería del lugar

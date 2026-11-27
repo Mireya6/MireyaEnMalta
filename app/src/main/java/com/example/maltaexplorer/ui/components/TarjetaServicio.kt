@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.maltaexplorer.model.Servicio
 import com.example.maltaexplorer.model.TipoServicioIcono
@@ -131,5 +132,24 @@ fun TarjetaServicio(
                 )
             }
         }
+    }
+}
+// Preview de TarjetaServicio con un servicio del Blue Lagoon (entre Comino y Gozo)
+@Preview(showBackground = true)
+@Composable
+private fun TarjetaServicioPreview() {
+    // Aplica el tema para la previsualización
+    MaterialTheme {
+        // Renderiza TarjetaServicio usando el servicio de barco del mockup del Blue Lagoon
+        TarjetaServicio(
+            data = TarjetaServicioData(
+                servicio = Servicio(
+                    id = "acceso-barco-blue-lagoon",
+                    titulo = "Acceso en Barco",
+                    descripcion = "Ferries regulares diarios",
+                    tipoIcono = TipoServicioIcono.BARCO
+                )
+            )
+        )
     }
 }

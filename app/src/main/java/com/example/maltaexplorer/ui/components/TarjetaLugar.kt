@@ -16,14 +16,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.maltaexplorer.R
+import com.example.maltaexplorer.model.CondicionesClima
 import com.example.maltaexplorer.model.Lugar
 
 
@@ -296,5 +297,58 @@ fun TarjetaLugar(
                 }
             }
         }
+    }
+}
+// Crea el ejemplo de La Valeta del mockup para previsualizar TarjetaLugar
+private fun laValetaTarjetaLugarPreviewSample(): Lugar = Lugar(
+    // Identificador del lugar
+    id = "la-valeta",
+    // Nombre principal del lugar según el mockup
+    titulo = "La Valeta (Valletta)",
+    // Categoría turística del mockup
+    categoria = "Historia",
+    // Ubicación dentro del archipiélago según el mockup
+    ubicacion = "Isla de Malta",
+    // Valoración media de ejemplo según el mockup
+    valoracion = 4.9,
+    // Cantidad de reseñas en formato texto según el mockup
+    numResenas = "1.8k",
+    // Descripción corta para la tarjeta
+    descripcionCorta = "La majestuosa capital amurallada barroca de los caballeros con vistas al puerto.",
+    // Descripción detallada del lugar
+    descripcionCompleta = "Capital histórica y barroca de Malta, declarada Patrimonio de la Humanidad, con calles escalonadas, baluartes y miradores.",
+    // URL principal de ejemplo
+    imagenUrl = "https://example.com/la-valeta.jpg",
+    // Lista de imágenes para galería
+    fotosGaleria = listOf(
+        "https://example.com/la-valeta-1.jpg",
+        "https://example.com/la-valeta-2.jpg"
+    ),
+    // Estado inicial de favorito según el mockup
+    esFavorito = false,
+    // Condiciones climáticas de ejemplo
+    condicionesHoy = CondicionesClima(
+        estado = "Soleado",
+        agua = "Mar calmado",
+        oleaje = "Brisa suave",
+        temperatura = "25 °C",
+        uv = "UV alto"
+    ),
+    // Lista vacía de servicios para la vista previa de la tarjeta
+    servicios = emptyList()
+)
+
+// Preview de TarjetaLugar con La Valeta según el mockup (C5)
+@Preview(showBackground = true)
+@Composable
+private fun TarjetaLugarPreview() {
+    // Aplica el tema para la previsualización
+    MaterialTheme {
+        // Renderiza TarjetaLugar con La Valeta
+        TarjetaLugar(
+            data = TarjetaLugarData(
+                lugar = laValetaTarjetaLugarPreviewSample()
+            )
+        )
     }
 }

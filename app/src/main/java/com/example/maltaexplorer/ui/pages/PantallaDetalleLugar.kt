@@ -56,7 +56,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.maltaexplorer.R
 import com.example.maltaexplorer.model.CondicionesClima
@@ -662,8 +661,8 @@ fun ResumenValoracion(
                             color = MaterialTheme.colorScheme.surface,
                             // Texto en negrita
                             fontWeight = FontWeight.Bold,
-                            // Tamaño de fuente de 18 sp
-                            fontSize = 18.sp
+                            // Estilo de título mediano del tema
+                            style = MaterialTheme.typography.titleMedium
                         )
                     }
                 }
@@ -935,8 +934,7 @@ fun DescripcionLugar(
             overflow = TextOverflow.Ellipsis,
             // Color secundario sobre superficie
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            // Altura de línea cómoda para lectura
-            lineHeight = 20.sp
+
         )
 
         // Espacio vertical de 6 dp antes del texto "Leer más / Leer menos"

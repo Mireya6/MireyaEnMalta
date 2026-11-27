@@ -224,8 +224,15 @@ fun TarjetaListado(
                         // Selecciona el icono según lugar.esFavorito
                         imageVector = if (lugar.esFavorito) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         // Obtiene la descripción accesible de favorito desde strings.xml
-                        contentDescription = stringResource(R.string.cd_favorito)
+                        contentDescription = stringResource(R.string.cd_favorito),
+                        // Color primario si es favorito o secundario sobre superficie
+                                tint = if (lugar.esFavorito) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
+
                 }
             }
 

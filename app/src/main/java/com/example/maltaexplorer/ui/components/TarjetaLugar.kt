@@ -76,15 +76,15 @@ fun TarjetaLugar(
                     // Altura fija de 200 dp
                     .height(200.dp)
             ) {
-                // Carga y muestra de forma asíncrona la fotografía principal del lugar
+                // Carga y muestra la fotografía principal del lugar de forma asíncrona
                 AsyncImage(
-                    // URL de la imagen del lugar
+                    // Pasa la URL de la imagen guardada en el modelo Lugar
                     model = lugar.imagenUrl,
-                    // Descripción de accesibilidad usando el título del lugar
-                    contentDescription = lugar.titulo,
-                    // Recorta proporcionalmente para llenar todo el espacio disponible
+                    // Obtiene el texto de accesibilidad desde strings.xml insertando el título del lugar
+                    contentDescription = stringResource(R.string.cd_imagen_lugar, lugar.titulo),
+                    // Recorta la imagen manteniendo proporciones para rellenar el contenedor
                     contentScale = ContentScale.Crop,
-                    // Ocupa todo el ancho y alto del Box
+                    // Hace que la imagen ocupe todo el ancho y alto del Box
                     modifier = Modifier.fillMaxSize()
                 )
 

@@ -31,4 +31,6 @@
     <string name="cd_valoracion">Valoración</string>
     <string name="cd_estrella">Estrella</string>
     <string name="cd_flecha_derecha">Flecha derecha</string>
+    <!-- Texto de accesibilidad para la fotografía principal de un lugar -->
+    <string name="cd_imagen_lugar">Fotografía de %1$s</string>
 </resources>

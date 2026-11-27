@@ -32,19 +32,35 @@ import com.example.maltaexplorer.R
 import com.example.maltaexplorer.model.Lugar
 
 
+// Data class que agrupa los datos y callbacks de ContenidoTarjeta (C1)
+data class ContenidoTarjetaData(
+    // Texto de ubicación del lugar (por ejemplo, isla o zona)
+    val ubicacion: String,
+    // Texto de valoración del lugar (por ejemplo, puntuación numérica)
+    val valoracion: String,
+    // Título principal del lugar
+    val titulo: String,
+    // Descripción breve del lugar
+    val descripcion: String,
+    // Acción ejecutada al pulsar el botón para ver más detalles
+    val onVerMasClick: () -> Unit = {}
+)
+
+// Data class que agrupa los datos y callbacks de TarjetaListado (C1)
+data class TarjetaListadoData(
+    // Modelo de datos del lugar a mostrar en la tarjeta
+    val lugar: Lugar,
+    // Acción ejecutada al pulsar ver más
+    val onVerMasClick: () -> Unit = {},
+    // Acción ejecutada al cambiar el estado de favorito
+    val onToggleFavorito: () -> Unit = {}
+)
+
 // Declara el composable que muestra la información textual y el botón inferior de la tarjeta
 @Composable
 fun ContenidoTarjeta(
-    // Texto de ubicación del lugar (por ejemplo, isla o zona)
-    ubicacion: String,
-    // Texto de valoración del lugar (por ejemplo, puntuación numérica)
-    valoracion: String,
-    // Título principal del lugar
-    titulo: String,
-    // Descripción breve del lugar
-    descripcion: String,
-    // Acción que se ejecuta al pulsar el botón para ver más detalles
-    onVerMasClick: () -> Unit,
+    // Datos y callbacks encapsulados en ContenidoTarjetaData
+    data: ContenidoTarjetaData,
     // Modificador opcional recibido desde el componente padre para aplicar en la raíz
     modifier: Modifier = Modifier
 ) {
@@ -84,10 +100,10 @@ fun ContenidoTarjeta(
                     // Aplica el color secundario de texto e iconos sobre superficie del tema
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                // Muestra el texto de ubicación recibido por parámetro
+                // Muestra el texto de ubicación desde data
                 Text(
                     // Asigna el valor dinámico de ubicación
-                    text = ubicacion,
+                    text = data.ubicacion,
                     // Aplica el estilo tipográfico de etiqueta pequeña del tema
                     style = MaterialTheme.typography.labelSmall,
                     // Usa el color secundario para suavizar la jerarquía visual
@@ -113,10 +129,10 @@ fun ContenidoTarjeta(
                     // Usa el color primario del tema para destacar la valoración
                     tint = MaterialTheme.colorScheme.primary
                 )
-                // Muestra el texto de valoración recibido por parámetro
+                // Muestra el texto de valoración desde data
                 Text(
                     // Asigna el valor dinámico de valoración
-                    text = valoracion,
+                    text = data.valoracion,
                     // Aplica el estilo tipográfico de etiqueta mediana del tema
                     style = MaterialTheme.typography.labelMedium,
                     // Pone el texto en negrita para resaltarlo
@@ -125,10 +141,10 @@ fun ContenidoTarjeta(
             }
         }
 
-        // Muestra el título principal del lugar
+        // Muestra el título principal del lugar desde data
         Text(
             // Asigna el valor dinámico del título
-            text = titulo,
+            text = data.titulo,
             // Aplica el estilo tipográfico de título mediano del tema
             style = MaterialTheme.typography.titleMedium,
             // Pone el título en negrita
@@ -139,10 +155,10 @@ fun ContenidoTarjeta(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Muestra la descripción corta del lugar
+        // Muestra la descripción corta del lugar desde data
         Text(
-            // Asigna la descripción corta recibida por parámetro
-            text = descripcion,
+            // Asigna la descripción corta desde data
+            text = data.descripcion,
             // Aplica el estilo tipográfico de cuerpo pequeño del tema
             style = MaterialTheme.typography.bodySmall,
             // Usa el color secundario de superficie para diferenciarlo del título
@@ -155,8 +171,8 @@ fun ContenidoTarjeta(
 
         // Botón alineado a la derecha para abrir más información del lugar
         Button(
-            // Ejecuta la función onVerMasClick al pulsar el botón
-            onClick = onVerMasClick,
+            // Ejecuta la función onVerMasClick desde data al pulsar el botón
+            onClick = data.onVerMasClick,
             // Coloca el botón al final horizontal dentro de la columna
             modifier = Modifier.align(Alignment.End),
             // Ajusta el relleno interior del botón (12 dp horizontal y 6 dp vertical)
@@ -188,15 +204,14 @@ fun ContenidoTarjeta(
 // Declara la tarjeta completa para representar un elemento Lugar dentro de un listado
 @Composable
 fun TarjetaListado(
-    // Modelo de datos del lugar a mostrar en la tarjeta
-    lugar: Lugar,
-    // Acción que se ejecuta al pulsar ver más
-    onVerMasClick: () -> Unit,
-    // Acción que se ejecuta al cambiar el estado de favorito
-    onToggleFavorito: () -> Unit,
+    // Datos y callbacks encapsulados en TarjetaListadoData
+    data: TarjetaListadoData,
     // Modificador opcional aplicado en la raíz de la tarjeta
     modifier: Modifier = Modifier
 ) {
+    // Extrae el objeto Lugar desde data para un acceso más limpio
+    val lugar = data.lugar
+
     // Contenedor Card con esquinas redondeadas y elevación suave
     Card(
         // Aplica el modifier recibido en la raíz y ocupa el ancho disponible
@@ -218,7 +233,7 @@ fun TarjetaListado(
                 horizontalArrangement = Arrangement.End
             ) {
                 // Botón de icono para alternar si el lugar está marcado como favorito
-                IconButton(onClick = onToggleFavorito) {
+                IconButton(onClick = data.onToggleFavorito) {
                     // Icono de corazón relleno si es favorito o borde si no lo es
                     Icon(
                         // Selecciona el icono según lugar.esFavorito
@@ -226,28 +241,30 @@ fun TarjetaListado(
                         // Obtiene la descripción accesible de favorito desde strings.xml
                         contentDescription = stringResource(R.string.cd_favorito),
                         // Color primario si es favorito o secundario sobre superficie
-                                tint = if (lugar.esFavorito) {
+                        tint = if (lugar.esFavorito) {
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.onSurfaceVariant
                         }
                     )
-
                 }
             }
 
-            // Pinta el contenido principal de la tarjeta con los datos del lugar
+            // Pinta el contenido principal de la tarjeta pasando ContenidoTarjetaData
             ContenidoTarjeta(
-                // Pasa la ubicación del modelo Lugar
-                ubicacion = lugar.ubicacion,
-                // Convierte la valoración a texto para mostrarla
-                valoracion = lugar.valoracion.toString(),
-                // Pasa el título del modelo Lugar
-                titulo = lugar.titulo,
-                // Pasa la descripción corta del modelo Lugar
-                descripcion = lugar.descripcionCorta,
-                // Reenvía el callback al pulsar ver más
-                onVerMasClick = onVerMasClick
+                // Construye ContenidoTarjetaData con los campos del lugar y el callback
+                data = ContenidoTarjetaData(
+                    // Pasa la ubicación del modelo Lugar
+                    ubicacion = lugar.ubicacion,
+                    // Convierte la valoración a texto para mostrarla
+                    valoracion = lugar.valoracion.toString(),
+                    // Pasa el título del modelo Lugar
+                    titulo = lugar.titulo,
+                    // Pasa la descripción corta del modelo Lugar
+                    descripcion = lugar.descripcionCorta,
+                    // Reenvía el callback al pulsar ver más desde data
+                    onVerMasClick = data.onVerMasClick
+                )
             )
         }
     }

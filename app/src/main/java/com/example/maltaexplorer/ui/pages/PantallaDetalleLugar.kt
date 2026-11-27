@@ -62,24 +62,91 @@ import com.example.maltaexplorer.model.CondicionesClima
 import com.example.maltaexplorer.model.Lugar
 import com.example.maltaexplorer.model.Servicio
 import com.example.maltaexplorer.ui.components.TarjetaServicio
+import com.example.maltaexplorer.ui.components.TarjetaServicioData
+
+// Data class que agrupa los datos y lambdas de PantallaDetalleLugar (C1)
+data class PantallaDetalleLugarData(
+    // Objeto Lugar con la información del lugar a mostrar
+    val lugar: Lugar,
+    // Callback ejecutado al pulsar el botón de volver
+    val onVolverClick: () -> Unit = {},
+    // Callback ejecutado al pulsar el botón de compartir
+    val onCompartirClick: () -> Unit = {},
+    // Callback ejecutado al alternar el estado de favorito
+    val onToggleFavorito: () -> Unit = {},
+    // Callback ejecutado al pulsar "Ver en mapa"
+    val onVerEnMapaClick: () -> Unit = {}
+)
+
+// Data class que agrupa los datos y lambdas de CabeceraDetalle (C1)
+data class CabeceraDetalleData(
+    // Indica si el lugar está marcado como favorito
+    val esFavorito: Boolean,
+    // Callback ejecutado al pulsar volver
+    val onVolver: () -> Unit = {},
+    // Callback ejecutado al pulsar compartir
+    val onCompartir: () -> Unit = {},
+    // Callback ejecutado al pulsar favorito
+    val onFavorito: () -> Unit = {}
+)
+
+// Data class que agrupa los datos de GaleriaLugar (C1)
+data class GaleriaLugarData(
+    // URL de la fotografía principal
+    val imagenPrincipal: String,
+    // Lista de URLs de fotos secundarias
+    val imagenesGaleria: List<String>,
+    // Categoría del lugar
+    val categoria: String
+)
+
+// Data class que agrupa los datos y lambdas de IdentidadLugar (C1)
+data class IdentidadLugarData(
+    // Objeto Lugar con categoría, título y ubicación
+    val lugar: Lugar,
+    // Callback ejecutado al pulsar "Ver en mapa"
+    val onVerEnMapaClick: () -> Unit = {}
+)
+
+// Data class que agrupa los datos y lambdas de ResumenValoracion (C1)
+data class ResumenValoracionData(
+    // Puntuación numérica del lugar
+    val valoracion: Double,
+    // Número de reseñas en formato texto
+    val numResenas: String,
+    // Callback ejecutado al pulsar el botón de opiniones
+    val onOpinionesClick: () -> Unit = {}
+)
+
+// Data class que agrupa los datos de CondicionesHoy (C1)
+data class CondicionesHoyData(
+    // Objeto con las condiciones climáticas del día
+    val condiciones: CondicionesClima
+)
+
+// Data class que agrupa los datos de DescripcionLugar (C1)
+data class DescripcionLugarData(
+    // Texto descriptivo completo del lugar
+    val descripcion: String
+)
+
+// Data class que agrupa los datos de ServiciosLugar (C1)
+data class ServiciosLugarData(
+    // Lista de servicios disponibles en el lugar
+    val servicios: List<Servicio>
+)
 
 // Declara la pantalla principal de detalle de un lugar turístico
 @Composable
-// Función Composable que recibe el lugar y los eventos de interacción
+// Función Composable que recibe PantallaDetalleLugarData y el modificador raíz
 fun PantallaDetalleLugar(
-    // Objeto con toda la información del lugar a mostrar
-    lugar: Lugar,
-    // Función que se ejecuta al pulsar el botón de volver
-    onVolverClick: () -> Unit,
-    // Función que se ejecuta al pulsar el botón de compartir
-    onCompartirClick: () -> Unit,
-    // Función que se ejecuta al cambiar el estado de favorito
-    onToggleFavorito: () -> Unit,
-    // Función que se ejecuta al pulsar "Ver en mapa"
-    onVerEnMapaClick: () -> Unit,
+    // Datos y callbacks de la pantalla
+    data: PantallaDetalleLugarData,
     // Modificador opcional para personalizar el contenedor desde fuera
     modifier: Modifier = Modifier
 ) {
+    // Extrae el objeto Lugar desde data para acceder a sus campos
+    val lugar = data.lugar
     // Crea y recuerda el estado de desplazamiento vertical de la pantalla
     val scrollState = rememberScrollState()
 
@@ -96,24 +163,30 @@ fun PantallaDetalleLugar(
     ) {
         // Pinta la cabecera superior de la pantalla de detalle
         CabeceraDetalle(
-            // Conecta el evento de volver atrás
-            onVolver = onVolverClick,
-            // Conecta el evento de compartir lugar
-            onCompartir = onCompartirClick,
-            // Conecta el evento de alternar favorito
-            onFavorito = onToggleFavorito,
-            // Indica si el lugar está actualmente marcado como favorito
-            esFavorito = lugar.esFavorito
+            // Pasa esFavorito y los callbacks encapsulados en CabeceraDetalleData
+            data = CabeceraDetalleData(
+                // Estado actual de favorito del lugar
+                esFavorito = lugar.esFavorito,
+                // Conecta el evento de volver atrás
+                onVolver = data.onVolverClick,
+                // Conecta el evento de compartir lugar
+                onCompartir = data.onCompartirClick,
+                // Conecta el evento de alternar favorito
+                onFavorito = data.onToggleFavorito
+            )
         )
 
         // Pinta la galería de imágenes del lugar
         GaleriaLugar(
-            // Pasa la URL de la fotografía principal
-            imagenPrincipal = lugar.imagenUrl,
-            // Pasa la lista de fotos secundarias
-            imagenesGaleria = lugar.fotosGaleria,
-            // Pasa la categoría del lugar
-            categoria = lugar.categoria
+            // Pasa imagen principal, galería y categoría en GaleriaLugarData
+            data = GaleriaLugarData(
+                // URL de la fotografía principal
+                imagenPrincipal = lugar.imagenUrl,
+                // Lista de fotos secundarias
+                imagenesGaleria = lugar.fotosGaleria,
+                // Categoría del lugar
+                categoria = lugar.categoria
+            )
         )
 
         // Inserta un espacio vertical de 16 dp
@@ -121,10 +194,13 @@ fun PantallaDetalleLugar(
 
         // Pinta el bloque de identidad con categoría, título, ubicación y mapa
         IdentidadLugar(
-            // Pasa el objeto completo del lugar
-            lugar = lugar,
-            // Conecta la acción para abrir el mapa
-            onVerEnMapaClick = onVerEnMapaClick,
+            // Pasa lugar y callback del mapa en IdentidadLugarData
+            data = IdentidadLugarData(
+                // Objeto completo del lugar
+                lugar = lugar,
+                // Conecta la acción para abrir el mapa
+                onVerEnMapaClick = data.onVerEnMapaClick
+            ),
             // Aplica margen horizontal de 16 dp
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -134,10 +210,13 @@ fun PantallaDetalleLugar(
 
         // Pinta la tarjeta con puntuación, reseñas y botón de opiniones
         ResumenValoracion(
-            // Pasa la puntuación numérica del lugar
-            valoracion = lugar.valoracion,
-            // Pasa el texto con el número de reseñas
-            numResenas = lugar.numResenas,
+            // Pasa valoración y reseñas en ResumenValoracionData
+            data = ResumenValoracionData(
+                // Puntuación numérica del lugar
+                valoracion = lugar.valoracion,
+                // Texto con el número de reseñas
+                numResenas = lugar.numResenas
+            ),
             // Aplica margen horizontal de 16 dp
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -147,8 +226,11 @@ fun PantallaDetalleLugar(
 
         // Pinta la tarjeta con las condiciones meteorológicas actuales
         CondicionesHoy(
-            // Pasa los datos climáticos del lugar
-            condiciones = lugar.condicionesHoy,
+            // Pasa los datos climáticos en CondicionesHoyData
+            data = CondicionesHoyData(
+                // Datos climáticos del lugar
+                condiciones = lugar.condicionesHoy
+            ),
             // Aplica margen horizontal de 16 dp
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -158,8 +240,11 @@ fun PantallaDetalleLugar(
 
         // Pinta la descripción completa con opción de expandir o contraer
         DescripcionLugar(
-            // Pasa el texto descriptivo del lugar
-            descripcion = lugar.descripcionCompleta,
+            // Pasa la descripción en DescripcionLugarData
+            data = DescripcionLugarData(
+                // Texto descriptivo del lugar
+                descripcion = lugar.descripcionCompleta
+            ),
             // Aplica margen horizontal de 16 dp
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -169,8 +254,11 @@ fun PantallaDetalleLugar(
 
         // Pinta la sección de servicios disponibles y su contador
         ServiciosLugar(
-            // Pasa la lista de servicios del lugar
-            servicios = lugar.servicios,
+            // Pasa la lista de servicios en ServiciosLugarData
+            data = ServiciosLugarData(
+                // Lista de servicios del lugar
+                servicios = lugar.servicios
+            ),
             // Aplica margen horizontal de 16 dp
             modifier = Modifier.padding(horizontal = 16.dp)
         )
@@ -184,14 +272,8 @@ fun PantallaDetalleLugar(
 @Composable
 // Función Composable para la barra superior con volver, título y acciones
 fun CabeceraDetalle(
-    // Callback ejecutado al pulsar volver
-    onVolver: () -> Unit,
-    // Callback ejecutado al pulsar compartir
-    onCompartir: () -> Unit,
-    // Callback ejecutado al pulsar favorito
-    onFavorito: () -> Unit,
-    // Indica si el lugar es favorito
-    esFavorito: Boolean,
+    // Datos y callbacks de la cabecera
+    data: CabeceraDetalleData,
     // Modificador opcional para personalizar la cabecera desde fuera
     modifier: Modifier = Modifier
 ) {
@@ -211,7 +293,7 @@ fun CabeceraDetalle(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         // Botón con icono para volver atrás
-        IconButton(onClick = onVolver) {
+        IconButton(onClick = data.onVolver) {
             // Dibuja la flecha hacia atrás con descripción accesible desde strings.xml
             Icon(
                 // Vector de flecha atrás adaptado a dirección de lectura
@@ -234,19 +316,19 @@ fun CabeceraDetalle(
         // Agrupa horizontalmente los botones de favorito y compartir
         Row {
             // Botón para marcar o desmarcar favorito
-            IconButton(onClick = onFavorito) {
-                // Dibuja el icono de corazón relleno o vacío según esFavorito
+            IconButton(onClick = data.onFavorito) {
+                // Dibuja el icono de corazón relleno o vacío según data.esFavorito
                 Icon(
                     // Selecciona el vector según el estado de favorito
-                    imageVector = if (esFavorito) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    imageVector = if (data.esFavorito) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     // Descripción accesible leída desde strings.xml
                     contentDescription = stringResource(R.string.cd_favorito),
                     // Pinta con el color primario si es favorito o con onSurface si no
-                    tint = if (esFavorito) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    tint = if (data.esFavorito) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                 )
             }
             // Botón para compartir el lugar
-            IconButton(onClick = onCompartir) {
+            IconButton(onClick = data.onCompartir) {
                 // Dibuja el icono de compartir con descripción desde strings.xml
                 Icon(
                     // Vector de compartir
@@ -263,12 +345,8 @@ fun CabeceraDetalle(
 @Composable
 // Función Composable que muestra las fotos del lugar
 fun GaleriaLugar(
-    // URL de la foto principal
-    imagenPrincipal: String,
-    // Lista de URLs de fotos adicionales
-    imagenesGaleria: List<String>,
-    // Categoría del lugar
-    categoria: String,
+    // Datos de la galería
+    data: GaleriaLugarData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
@@ -289,8 +367,8 @@ fun GaleriaLugar(
         ) {
             // Carga de forma asíncrona la fotografía principal
             AsyncImage(
-                // URL de la imagen principal
-                model = imagenPrincipal,
+                // URL de la imagen principal desde data
+                model = data.imagenPrincipal,
                 // Descripción accesible leída desde strings.xml
                 contentDescription = stringResource(R.string.cd_vista_aerea),
                 // Recorta manteniendo proporción para rellenar el espacio
@@ -314,8 +392,8 @@ fun GaleriaLugar(
             ) {
                 // Muestra la categoría en mayúsculas
                 Text(
-                    // Convierte la categoría a mayúsculas
-                    text = categoria.uppercase(),
+                    // Convierte la categoría de data a mayúsculas
+                    text = data.categoria.uppercase(),
                     // Color de superficie para contrastar sobre el fondo oscuro
                     color = MaterialTheme.colorScheme.surface,
                     // Estilo de etiqueta pequeña del tema
@@ -384,7 +462,7 @@ fun GaleriaLugar(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Toma como máximo las 3 primeras imágenes de la galería sin invocar remember fuera de contexto composable
-            val previewList = imagenesGaleria.take(3)
+            val previewList = data.imagenesGaleria.take(3)
             // Genera una miniatura por cada URL de previewList
             items(previewList) { imgUrl ->
                 // Carga cada miniatura de forma asíncrona
@@ -420,11 +498,11 @@ fun GaleriaLugar(
                     contentAlignment = Alignment.Center
                 ) {
                     // Comprueba si existen al menos 4 imágenes en la galería
-                    if (imagenesGaleria.size > 3) {
+                    if (data.imagenesGaleria.size > 3) {
                         // Carga la cuarta imagen como fondo de la última miniatura
                         AsyncImage(
                             // Cuarta URL de la lista
-                            model = imagenesGaleria[3],
+                            model = data.imagenesGaleria[3],
                             // Imagen de fondo decorativa con el contador encima
                             contentDescription = null,
                             // Recorta manteniendo proporción
@@ -466,13 +544,14 @@ fun GaleriaLugar(
 @Composable
 // Función Composable que muestra los datos principales de identidad del lugar
 fun IdentidadLugar(
-    // Objeto Lugar con categoría, título y ubicación
-    lugar: Lugar,
-    // Callback ejecutado al pulsar "Ver en mapa"
-    onVerEnMapaClick: () -> Unit,
+    // Datos y callbacks de identidad
+    data: IdentidadLugarData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
+    // Extrae el objeto Lugar desde data
+    val lugar = data.lugar
+
     // Columna principal del bloque de identidad
     Column(modifier = modifier.fillMaxWidth()) {
         // Fila superior con la categoría a la izquierda y el distintivo a la derecha
@@ -586,8 +665,8 @@ fun IdentidadLugar(
 
             // Botón de texto para abrir el lugar en el mapa
             TextButton(
-                // Ejecuta el callback onVerEnMapaClick al pulsar
-                onClick = onVerEnMapaClick,
+                // Ejecuta el callback data.onVerEnMapaClick al pulsar
+                onClick = data.onVerEnMapaClick,
                 // Elimina relleno extra alrededor del texto del botón
                 contentPadding = PaddingValues(0.dp)
             ) {
@@ -611,10 +690,8 @@ fun IdentidadLugar(
 @Composable
 // Función Composable que muestra puntuación, reseñas y acceso a opiniones
 fun ResumenValoracion(
-    // Puntuación numérica media del lugar
-    valoracion: Double,
-    // Número de reseñas en formato texto
-    numResenas: String,
+    // Datos y callbacks de valoración
+    data: ResumenValoracionData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
@@ -655,8 +732,8 @@ fun ResumenValoracion(
                     Box(contentAlignment = Alignment.Center) {
                         // Muestra el valor numérico de la valoración
                         Text(
-                            // Convierte la valoración a texto
-                            text = "$valoracion",
+                            // Convierte la valoración de data a texto
+                            text = "${data.valoracion}",
                             // Texto con color de superficie del tema para buen contraste
                             color = MaterialTheme.colorScheme.surface,
                             // Texto en negrita
@@ -699,8 +776,8 @@ fun ResumenValoracion(
                     }
                     // Muestra "Basado en X reseñas" desde strings.xml
                     Text(
-                        // Formatea la cadena de strings.xml con numResenas
-                        text = stringResource(R.string.detalle_basado_en_resenas, numResenas),
+                        // Formatea la cadena de strings.xml con data.numResenas
+                        text = stringResource(R.string.detalle_basado_en_resenas, data.numResenas),
                         // Estilo de cuerpo pequeño del tema
                         style = MaterialTheme.typography.bodySmall,
                         // Color secundario sobre superficie
@@ -711,8 +788,8 @@ fun ResumenValoracion(
 
             // Botón con borde para abrir las opiniones
             OutlinedButton(
-                // Acción vacía temporal al pulsar el botón de opiniones
-                onClick = { },
+                // Ejecuta el callback de opiniones definido en data
+                onClick = data.onOpinionesClick,
                 // Esquinas redondeadas de 8 dp
                 shape = RoundedCornerShape(8.dp),
                 // Relleno interior horizontal de 12 dp y vertical de 6 dp
@@ -734,11 +811,14 @@ fun ResumenValoracion(
 @Composable
 // Función Composable que renderiza estado, agua, oleaje, temperatura y UV
 fun CondicionesHoy(
-    // Objeto con los datos climáticos del día
-    condiciones: CondicionesClima,
+    // Datos de las condiciones climáticas
+    data: CondicionesHoyData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
+    // Extrae las condiciones climáticas desde data
+    val condiciones = data.condiciones
+
     // Tarjeta contenedora de las condiciones meteorológicas
     Card(
         // Ocupa todo el ancho y aplica el modifier recibido
@@ -912,8 +992,8 @@ fun CondicionesHoy(
 @Composable
 // Función Composable que muestra la descripción y permite alternar "Leer más / Leer menos"
 fun DescripcionLugar(
-    // Texto descriptivo completo del lugar
-    descripcion: String,
+    // Datos de la descripción
+    data: DescripcionLugarData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
@@ -924,8 +1004,8 @@ fun DescripcionLugar(
     Column(modifier = modifier.fillMaxWidth()) {
         // Muestra la descripción limitada a 3 líneas cuando no está expandida
         Text(
-            // Texto descriptivo del lugar
-            text = descripcion,
+            // Texto descriptivo del lugar desde data
+            text = data.descripcion,
             // Estilo de cuerpo mediano del tema
             style = MaterialTheme.typography.bodyMedium,
             // Sin límite de líneas si está expandido, o 3 líneas si está contraído
@@ -933,8 +1013,7 @@ fun DescripcionLugar(
             // Añade puntos suspensivos cuando está contraído y supera las 3 líneas
             overflow = TextOverflow.Ellipsis,
             // Color secundario sobre superficie
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         // Espacio vertical de 6 dp antes del texto "Leer más / Leer menos"
@@ -964,11 +1043,14 @@ fun DescripcionLugar(
 @Composable
 // Función Composable que lista los servicios en un LazyRow
 fun ServiciosLugar(
-    // Lista de servicios asociados al lugar
-    servicios: List<Servicio>,
+    // Datos de servicios
+    data: ServiciosLugarData,
     // Modificador opcional externo
     modifier: Modifier = Modifier
 ) {
+    // Extrae la lista de servicios desde data
+    val servicios = data.servicios
+
     // Columna principal de la sección de servicios
     Column(modifier = modifier.fillMaxWidth()) {
         // Fila superior con el título de la sección y el contador de puntos/servicios
@@ -1013,8 +1095,8 @@ fun ServiciosLugar(
         ) {
             // Crea una TarjetaServicio por cada elemento de la lista servicios
             items(servicios) { servicio ->
-                // Pinta la tarjeta reutilizable del servicio
-                TarjetaServicio(servicio = servicio)
+                // Pinta la tarjeta reutilizable del servicio pasando TarjetaServicioData (C1)
+                TarjetaServicio(data = TarjetaServicioData(servicio = servicio))
             }
         }
     }

@@ -26,252 +26,270 @@ import coil.compose.AsyncImage
 import com.example.maltaexplorer.R
 import com.example.maltaexplorer.model.Lugar
 
+
+// Data class que agrupa los datos y callbacks de TarjetaLugar (cumpliendo C1)
+data class TarjetaLugarData(
+    // Objeto Lugar con toda la información que se muestra en la tarjeta
+    val lugar: Lugar,
+    // Callback ejecutado al pulsar la tarjeta o el botón "Ver más"
+    val onVerMasClick: (String) -> Unit = {},
+    // Callback ejecutado al pulsar el icono de favorito
+    val onToggleFavorito: (String) -> Unit = {}
+)
+
 // Declara la función Composable reutilizable que pinta la tarjeta de un lugar turístico
 @Composable
 fun TarjetaLugar(
-    // Recibe el objeto Lugar con todos sus datos (título, foto, valoración, etc.)
-    lugar: Lugar,
-    // Callback que se ejecuta al pulsar la tarjeta o "Ver más", pasando el id del lugar
-    onVerMasClick: (String) -> Unit,
-    // Callback que se ejecuta al pulsar el corazón, pasando el id del lugar
-    onToggleFavorito: (String) -> Unit,
-    // Modificador opcional externo para personalizar tamaño o márgenes desde quien llame a la tarjeta
+    // Datos y acciones encapsulados en TarjetaLugarData
+    data: TarjetaLugarData,
+    // Modificador opcional aplicado en la raíz del componente (cumpliendo C2 y C3)
     modifier: Modifier = Modifier
 ) {
-    // Contenedor principal con elevación y bordes redondeados tipo tarjeta de Material 3
+    // Extrae la referencia a Lugar desde data para un acceso más limpio
+    val lugar = data.lugar
+
+    // Tarjeta principal de Material 3 con bordes redondeados y elevación
     Card(
-        // Aplica el modifier recibido, ocupa todo el ancho disponible y hace toda la tarjeta clicable
+        // Aplica el modifier externo, ocupa todo el ancho y permite pulsar la tarjeta
         modifier = modifier
+            // Ocupa el ancho máximo disponible
             .fillMaxWidth()
-            .clickable { onVerMasClick(lugar.id) },
-        // Redondea las 4 esquinas de la tarjeta con un radio de 16 dp
+            // Dispara onVerMasClick pasando el identificador del lugar
+            .clickable { data.onVerMasClick(lugar.id) },
+        // Redondea las esquinas de la tarjeta a 16 dp
         shape = RoundedCornerShape(16.dp),
-        // Añade una sombra suave de 4 dp para dar sensación de relieve
+        // Aplica sombra de elevación de 4 dp
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        // Usa el color de superficie definido en el tema actual de Material
+        // Usa el color de superficie del tema actual
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
-        // Organiza verticalmente la zona superior (imagen) y la zona inferior (textos y botón)
+        // Columna principal que apila la imagen superior y el bloque inferior de información
         Column(modifier = Modifier.fillMaxWidth()) {
 
-            // Contenedor que permite superponer etiquetas y botones encima de la foto principal
+            // Contenedor Box para superponer la categoría y el botón de favorito sobre la imagen
             Box(
-                // Ocupa todo el ancho de la tarjeta con una altura fija de 200 dp
+                // Ocupa todo el ancho y fija una altura de 200 dp
                 modifier = Modifier
+                    // Ancho completo
                     .fillMaxWidth()
+                    // Altura fija de 200 dp
                     .height(200.dp)
             ) {
-                // Carga de forma asíncrona la fotografía del lugar desde su URL
+                // Carga y muestra de forma asíncrona la fotografía principal del lugar
                 AsyncImage(
-                    // Indica la URL de la imagen obtenida del objeto lugar
+                    // URL de la imagen del lugar
                     model = lugar.imagenUrl,
-                    // Usa el título dinámico del lugar como descripción accesible de la foto
+                    // Descripción de accesibilidad usando el título del lugar
                     contentDescription = lugar.titulo,
-                    // Recorta la imagen manteniendo su proporción para rellenar todo el hueco sin deformarse
+                    // Recorta proporcionalmente para llenar todo el espacio disponible
                     contentScale = ContentScale.Crop,
-                    // Hace que la imagen ocupe el 100% del ancho y alto del Box
+                    // Ocupa todo el ancho y alto del Box
                     modifier = Modifier.fillMaxSize()
                 )
 
-                // Etiqueta flotante con fondo oscuro del tema para mostrar la categoría
+                // Etiqueta flotante con la categoría del lugar en la esquina superior izquierda
                 Surface(
-                    // Redondea las esquinas de la etiqueta a 8 dp
+                    // Esquinas redondeadas de 8 dp
                     shape = RoundedCornerShape(8.dp),
-                    // Pinta fondo oscuro semitransparente basado en onSurface del tema
+                    // Fondo semitransparente derivado de onSurface del tema
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
-                    // Coloca la etiqueta en la esquina superior izquierda con 12 dp de margen
+                    // Posiciona arriba a la izquierda con margen exterior de 12 dp
                     modifier = Modifier
+                        // Alineación superior izquierda
                         .align(Alignment.TopStart)
+                        // Margen de 12 dp
                         .padding(12.dp)
                 ) {
-                    // Muestra el nombre de la categoría en letras mayúsculas
+                    // Texto de la categoría en mayúsculas
                     Text(
-                        // Convierte la categoría del lugar a mayúsculas
+                        // Convierte la categoría a mayúsculas
                         text = lugar.categoria.uppercase(),
-                        // Aplica el estilo tipográfico de etiqueta pequeña del tema
+                        // Estilo tipográfico de etiqueta pequeña
                         style = MaterialTheme.typography.labelSmall,
-                        // Pinta el texto con el color de superficie del tema para contrastar
+                        // Color contrastado basado en surface del tema
                         color = MaterialTheme.colorScheme.surface,
-                        // Pone el texto en negrita
+                        // Texto en negrita
                         fontWeight = FontWeight.Bold,
-                        // Añade margen interior horizontal de 8 dp y vertical de 4 dp dentro de la etiqueta
+                        // Relleno interior horizontal de 8 dp y vertical de 4 dp
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                     )
                 }
 
-                // Botón circular flotante en la esquina superior derecha para marcar o desmarcar favorito
+                // Botón circular flotante en la esquina superior derecha para alternar favorito
                 IconButton(
-                    // Ejecuta el evento onToggleFavorito enviando el identificador del lugar
-                    onClick = { onToggleFavorito(lugar.id) },
-                    // Posiciona y da forma circular con fondo claro del tema al botón
+                    // Llama a onToggleFavorito pasando el id del lugar
+                    onClick = { data.onToggleFavorito(lugar.id) },
+                    // Posiciona, recorta en círculo y da fondo claro semitransparente
                     modifier = Modifier
-                        // Lo alinea en la esquina superior derecha del Box
+                        // Alineación superior derecha
                         .align(Alignment.TopEnd)
-                        // Separa el botón 8 dp de los bordes superior y derecho
+                        // Margen exterior de 8 dp
                         .padding(8.dp)
-                        // Recorta el área del botón en forma de círculo
+                        // Recorte circular
                         .clip(CircleShape)
-                        // Pinta un fondo claro semitransparente basado en surface del tema
+                        // Fondo claro semitransparente del tema
                         .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
-                        // Fija el tamaño del botón en 36x36 dp
+                        // Tamaño total del botón de 36 dp
                         .size(36.dp)
                 ) {
-                    // Dibuja el icono del corazón dentro del botón circular
+                    // Icono de corazón que refleja si el lugar está marcado como favorito
                     Icon(
-                        // Elige corazón relleno si esFavorito es true, o solo el contorno si es false
+                        // Corazón relleno si esFavorito es true, borde si es false
                         imageVector = if (lugar.esFavorito) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                        // Lee el texto "Favorito" desde strings.xml para accesibilidad
+                        // Texto de accesibilidad obtenido desde strings.xml
                         contentDescription = stringResource(R.string.cd_favorito),
-                        // Pinta el corazón usando colores del tema según el estado de favorito
+                        // Color primario si es favorito o variante de superficie si no lo es
                         tint = if (lugar.esFavorito) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        // Ajusta el tamaño del icono interior a 20x20 dp
+                        // Tamaño del icono de 20 dp
                         modifier = Modifier.size(20.dp)
                     )
                 }
             }
 
-            // Columna inferior que contiene los datos textuales y el botón de acción de la tarjeta
+            // Columna inferior con ubicación, valoración, título, descripción y botón de acción
             Column(
-                // Ocupa todo el ancho y añade un margen interior de 16 dp en los cuatro lados
+                // Ocupa todo el ancho y aplica relleno interior de 16 dp
                 modifier = Modifier
+                    // Ancho completo
                     .fillMaxWidth()
+                    // Margen interior de 16 dp en todos los lados
                     .padding(16.dp)
             ) {
-                // Fila superior que reparte la ubicación a la izquierda y la valoración a la derecha
+                // Fila superior que separa ubicación a la izquierda y valoración a la derecha
                 Row(
-                    // Ocupa todo el ancho disponible de la columna
+                    // Ancho completo
                     modifier = Modifier.fillMaxWidth(),
-                    // Empuja un bloque al extremo izquierdo y el otro al extremo derecho
+                    // Separa los elementos a ambos extremos
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    // Centra verticalmente ambos bloques en la misma línea
+                    // Centra verticalmente los elementos de la fila
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Sub-fila que agrupa el icono de pin y el texto de la ubicación
+                    // Fila interna para el icono y texto de ubicación
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Dibuja el icono de pin de ubicación
+                        // Icono de ubicación
                         Icon(
-                            // Selecciona el vector estándar de pin de mapa
+                            // Vector de pin de ubicación
                             imageVector = Icons.Default.LocationOn,
-                            // Lee la descripción "Ubicación" desde strings.xml
+                            // Descripción de accesibilidad desde strings.xml
                             contentDescription = stringResource(R.string.cd_ubicacion),
-                            // Pinta el icono con el color primario del tema
+                            // Color primario del tema
                             tint = MaterialTheme.colorScheme.primary,
-                            // Fija el tamaño del icono en 16x16 dp
+                            // Tamaño de 16 dp
                             modifier = Modifier.size(16.dp)
                         )
-                        // Inserta un espacio horizontal de 4 dp entre el pin y el texto
+                        // Separación horizontal de 4 dp entre icono y texto
                         Spacer(modifier = Modifier.width(4.dp))
-                        // Muestra el nombre de la ubicación del lugar
+                        // Texto con la ubicación del lugar
                         Text(
-                            // Pasa el texto dinámico de ubicación del objeto lugar
+                            // Nombre de la ubicación
                             text = lugar.ubicacion,
-                            // Usa el estilo de texto pequeño del tema
+                            // Estilo de texto pequeño
                             style = MaterialTheme.typography.bodySmall,
-                            // Usa un tono secundario de texto para diferenciarlo del título principal
+                            // Color secundario de texto
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
-                    // Sub-fila que agrupa el icono de estrella y la puntuación numérica
+                    // Fila interna para el icono de estrella y la puntuación
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Dibuja el icono de estrella
+                        // Icono de estrella
                         Icon(
-                            // Selecciona el vector estándar de estrella rellena
+                            // Vector de estrella
                             imageVector = Icons.Default.Star,
-                            // Lee la descripción "Valoración" desde strings.xml
+                            // Descripción de accesibilidad desde strings.xml
                             contentDescription = stringResource(R.string.cd_valoracion),
-                            // Pinta la estrella con el color primario del tema
+                            // Color primario del tema
                             tint = MaterialTheme.colorScheme.primary,
-                            // Fija el tamaño de la estrella en 16x16 dp
+                            // Tamaño de 16 dp
                             modifier = Modifier.size(16.dp)
                         )
-                        // Inserta un espacio horizontal de 4 dp entre la estrella y la nota
+                        // Separación horizontal de 4 dp entre estrella y puntuación
                         Spacer(modifier = Modifier.width(4.dp))
-                        // Muestra la puntuación junto al número de reseñas entre paréntesis
+                        // Texto con valoración numérica y número de reseñas
                         Text(
-                            // Combina la valoración numérica y el contador de reseñas del lugar
+                            // Formatea valoración y número de reseñas
                             text = "${lugar.valoracion} (${lugar.numResenas})",
-                            // Aplica el estilo de texto pequeño del tema
+                            // Estilo de texto pequeño
                             style = MaterialTheme.typography.bodySmall,
-                            // Aplica grosor seminegrita para destacar la puntuación
+                            // Grosor seminegrita
                             fontWeight = FontWeight.SemiBold,
-                            // Usa el color principal de texto sobre superficie
+                            // Color principal sobre superficie
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
 
-                // Añade una separación vertical de 8 dp debajo de la fila de ubicación/valoración
+                // Espacio vertical de 8 dp tras la fila de ubicación y valoración
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Muestra el título principal del lugar
+                // Título principal del lugar
                 Text(
-                    // Pasa el título dinámico del objeto lugar
+                    // Título obtenido del modelo Lugar
                     text = lugar.titulo,
-                    // Aplica el estilo de título grande del tema
+                    // Estilo de título grande del tema
                     style = MaterialTheme.typography.titleLarge,
-                    // Resalta el título en negrita
+                    // Título en negrita
                     fontWeight = FontWeight.Bold,
-                    // Usa el color principal de texto sobre superficie
+                    // Color principal sobre superficie
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                // Añade una separación vertical de 4 dp entre el título y la descripción corta
+                // Espacio vertical de 4 dp entre título y descripción corta
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Muestra un resumen breve del lugar limitado a 2 líneas
+                // Descripción breve del lugar limitada a dos líneas
                 Text(
-                    // Pasa la descripción corta del objeto lugar
+                    // Texto de descripción corta
                     text = lugar.descripcionCorta,
-                    // Usa el estilo de cuerpo de texto mediano del tema
+                    // Estilo de cuerpo mediano
                     style = MaterialTheme.typography.bodyMedium,
-                    // Usa un color más suave para jerarquizar respecto al título
+                    // Color secundario sobre superficie
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    // Limita el texto a un máximo de 2 líneas visibles
+                    // Máximo de 2 líneas visibles
                     maxLines = 2,
-                    // Añade "..." al final si el texto supera las 2 líneas
+                    // Muestra puntos suspensivos si se corta el texto
                     overflow = TextOverflow.Ellipsis
                 )
 
-                // Añade una separación vertical de 12 dp antes del botón inferior
+                // Espacio vertical de 12 dp antes del botón inferior
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Fila inferior usada para alinear el botón "Ver más" a la derecha
+                // Fila inferior para alinear el botón "Ver más" a la derecha
                 Row(
-                    // Ocupa todo el ancho disponible de la tarjeta
+                    // Ancho completo
                     modifier = Modifier.fillMaxWidth(),
-                    // Empuja el contenido hijo hacia el borde derecho
+                    // Alinea el contenido al extremo derecho
                     horizontalArrangement = Arrangement.End
                 ) {
-                    // Botón principal de acción para abrir el detalle del lugar
+                    // Botón para navegar al detalle del lugar
                     Button(
-                        // Llama a onVerMasClick pasando el id del lugar pulsado
-                        onClick = { onVerMasClick(lugar.id) },
-                        // Usa el color primario del tema como fondo del botón
+                        // Dispara onVerMasClick pasando el id del lugar
+                        onClick = { data.onVerMasClick(lugar.id) },
+                        // Fondo con el color primario del tema
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
-                        // Redondea las esquinas del botón a 8 dp
+                        // Esquinas redondeadas de 8 dp
                         shape = RoundedCornerShape(8.dp),
-                        // Define el relleno interior del botón (16 dp a los lados, 8 dp arriba/abajo)
+                        // Relleno interior horizontal de 16 dp y vertical de 8 dp
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
-                        // Texto visible dentro del botón
+                        // Texto del botón obtenido desde strings.xml
                         Text(
-                            // Lee el texto "Ver más" desde strings.xml en lugar de escribirlo fijo
+                            // Recurso de texto "Ver más"
                             text = stringResource(R.string.accion_ver_mas),
-                            // Aplica el estilo tipográfico de botón/etiqueta grande
+                            // Estilo de etiqueta grande
                             style = MaterialTheme.typography.labelLarge,
-                            // Aplica grosor medio al texto del botón
+                            // Grosor tipográfico medio
                             fontWeight = FontWeight.Medium
                         )
-                        // Inserta un espacio horizontal de 6 dp entre el texto y la flecha
+                        // Espacio horizontal de 6 dp entre texto e icono
                         Spacer(modifier = Modifier.width(6.dp))
-                        // Dibuja el icono de flecha apuntando hacia la derecha
+                        // Icono de flecha hacia la derecha acompañando al texto
                         Icon(
-                            // Usa la flecha auto-espejada para respetar la dirección de lectura
+                            // Flecha adaptada a dirección de lectura
                             imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                            // Lee la descripción "Flecha derecha" desde strings.xml
+                            // Descripción de accesibilidad desde strings.xml
                             contentDescription = stringResource(R.string.cd_flecha_derecha),
-                            // Ajusta el tamaño del icono de flecha a 16x16 dp
+                            // Tamaño del icono de 16 dp
                             modifier = Modifier.size(16.dp)
                         )
                     }

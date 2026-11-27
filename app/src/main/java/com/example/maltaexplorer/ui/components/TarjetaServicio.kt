@@ -29,14 +29,23 @@ import androidx.compose.ui.unit.dp
 import com.example.maltaexplorer.model.Servicio
 import com.example.maltaexplorer.model.TipoServicioIcono
 
+// Data class que agrupa los datos de TarjetaServicio (C1)
+data class TarjetaServicioData(
+    // Objeto Servicio con su tipo de icono, título y descripción
+    val servicio: Servicio
+)
+
 // Declara el componente Composable reutilizable que muestra un servicio disponible del lugar
 @Composable
 fun TarjetaServicio(
-    // Recibe el objeto Servicio con su tipo de icono, título y descripción
-    servicio: Servicio,
+    // Datos encapsulados en TarjetaServicioData
+    data: TarjetaServicioData,
     // Modificador opcional externo para personalizar tamaño o márgenes desde quien use la tarjeta
     modifier: Modifier = Modifier
 ) {
+    // Extrae el objeto Servicio desde data para un acceso más limpio
+    val servicio = data.servicio
+
     // Contenedor tipo tarjeta con ancho fijo, esquinas redondeadas, color de superficie y sombra suave
     Card(
         // Fija el ancho de la tarjeta en 170 dp y aplica el modifier externo si se pasa

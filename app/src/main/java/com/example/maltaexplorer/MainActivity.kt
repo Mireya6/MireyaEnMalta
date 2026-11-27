@@ -16,6 +16,7 @@ import com.example.maltaexplorer.model.Lugar
 import com.example.maltaexplorer.model.Servicio
 import com.example.maltaexplorer.model.TipoServicioIcono
 import com.example.maltaexplorer.ui.pages.PantallaDetalleLugar
+import com.example.maltaexplorer.ui.pages.PantallaDetalleLugarData
 import com.example.maltaexplorer.ui.theme.MaltaExplorerTheme
 
 // Declara la actividad principal de la aplicación basada en ComponentActivity
@@ -88,7 +89,7 @@ class MainActivity : ComponentActivity() {
             var lugarEstado by remember { mutableStateOf(lugarInicial) }
 
             // Aplica el tema MaterialTheme de la aplicación
-            MaltaExplorerTheme{
+            MaltaExplorerTheme {
                 // Superficie base que ocupa toda la pantalla con el color de fondo del tema
                 Surface(
                     // Ocupa el ancho y alto completos de la pantalla
@@ -96,18 +97,23 @@ class MainActivity : ComponentActivity() {
                     // Aplica el color de fondo definido en el tema
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Renderiza la pantalla de detalle con el estado actual del lugar
+                    // Renderiza la pantalla de detalle encapsulando datos y callbacks en PantallaDetalleLugarData (C1)
                     PantallaDetalleLugar(
-                        // Pasa el objeto Lugar actual
-                        lugar = lugarEstado,
-                        // Acción al pulsar volver
-                        onVolverClick = { },
-                        // Acción al pulsar compartir
-                        onCompartirClick = { },
-                        // Alterna el estado esFavorito al pulsar el botón correspondiente
-                        onToggleFavorito = { lugarEstado = lugarEstado.copy(esFavorito = !lugarEstado.esFavorito) },
-                        // Acción al pulsar ver en mapa
-                        onVerEnMapaClick = { }
+                        // Construye PantallaDetalleLugarData con el estado actual y las acciones
+                        data = PantallaDetalleLugarData(
+                            // Pasa el objeto Lugar actual
+                            lugar = lugarEstado,
+                            // Acción al pulsar volver
+                            onVolverClick = { },
+                            // Acción al pulsar compartir
+                            onCompartirClick = { },
+                            // Alterna el estado esFavorito al pulsar el botón correspondiente
+                            onToggleFavorito = {
+                                lugarEstado = lugarEstado.copy(esFavorito = !lugarEstado.esFavorito)
+                            },
+                            // Acción al pulsar ver en mapa
+                            onVerEnMapaClick = { }
+                        )
                     )
                 }
             }
